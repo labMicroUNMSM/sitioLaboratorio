@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import './tokens.css';
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+/* Foco visible universal — no se depende solo de Tailwind utility classes
+   para esto, porque debe aplicar incluso a elementos que no las usan. */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}

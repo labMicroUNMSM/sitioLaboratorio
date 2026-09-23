@@ -1,0 +1,100 @@
+/**
+ * Tokens de diseño — Sitio del Laboratorio (FCB, UNMSM)
+ * Ver ADR-0003 para el razonamiento de la paleta.
+ *
+ * Contraste verificado (WCAG 2.1 AA, texto normal ≥ 4.5:1, texto grande ≥ 3:1):
+ *   --color-ink        sobre --color-bg          → ~16.1:1
+ *   --color-guinda-700  sobre --color-bg          → ~8.9:1   (texto y enlaces)
+ *   --color-guinda-700  sobre --color-white       → ~9.4:1
+ *   --color-white        sobre --color-guinda-700 → ~9.4:1   (texto sobre header)
+ *   --color-ink         sobre --color-oro-200     → ~13.2:1  (texto sobre fondo dorado claro)
+ *   --color-oro-700 NO se usa como color de texto sobre fondos claros: falla AA
+ *   (contraste ~2.1:1). Se reserva para bordes, iconos grandes y fondos con
+ *   texto oscuro encima.
+ *
+ * Los ratios de arriba son cálculos aproximados hechos a mano al definir la
+ * paleta, no un reemplazo del chequeo automatizado. M0.7 corre un verificador
+ * real (axe/pa11y) contra estos valores antes de marcar el criterio de
+ * aceptación de accesibilidad como cumplido; si algo no pasa, se ajusta aquí,
+ * no en cada componente.
+ */
+
+:root {
+  /* ---- Paleta base ---- */
+  /* Neutros cálidos (fondo y texto) */
+  --color-bg: #faf9f7;
+  --color-white: #ffffff;
+  --color-ink: #201a18;          /* texto principal */
+  --color-ink-muted: #57504c;    /* texto secundario, aún AA sobre --color-bg (~7.3:1) */
+  --color-border: #e4dfda;
+
+  /* Guinda — acento primario (resuena con la identidad histórica de San Marcos,
+     sin ser su marca registrada). Úsalo para enlaces, foco, CTAs, header. */
+  --color-guinda-900: #3d0d17;
+  --color-guinda-700: #6e1626;   /* uso principal: texto/link, botones, header */
+  --color-guinda-500: #9c2a3d;
+  --color-guinda-100: #f6e6e9;   /* fondos suaves, chips */
+
+  /* Oro — acento secundario, solo decorativo/estructural, nunca texto pequeño */
+  --color-oro-700: #a9832f;
+  --color-oro-200: #f1e4c2;
+
+  /* Azul — tercer acento, tomado del campo del escudo (agua/cielo), para
+     distinguir estados o categorías sin depender solo de guinda/oro */
+  --color-azul-700: #1f4e63;
+  --color-azul-100: #e5eef1;
+
+  /* Estados semánticos */
+  --color-success: #1f6e3d;
+  --color-warning: #8a5a12;
+  --color-danger: #a3222f;
+
+  /* ---- Tipografía ---- */
+  /* Una sola familia con dos pesos claramente distintos: serif editorial para
+     titulares (credibilidad, tono académico) + sans neutra para UI y cuerpo
+     largo (legibilidad en pantalla). Evita el default "sans para todo". */
+  --font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.75rem;
+  --text-2xl: 2.25rem;
+  --text-3xl: 3rem;
+
+  --leading-tight: 1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.7;   /* cuerpo largo en serif (biografías, resúmenes) */
+
+  /* ---- Espaciado (escala 4px) ---- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  /* ---- Layout ---- */
+  --content-max-width: 72ch;   /* ~<80 caracteres por línea en cuerpo */
+  --page-max-width: 1200px;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+
+  /* ---- Foco visible (accesibilidad, no negociable) ---- */
+  --focus-ring: 0 0 0 3px var(--color-guinda-100), 0 0 0 5px var(--color-guinda-700);
+}
+
+/* Respeta preferencia de movimiento reducido en toda la app */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
