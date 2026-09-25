@@ -1,14 +1,15 @@
+import { withPayload } from '@payloadcms/next/withPayload'
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  serverExternalPackages: ['sharp'], // <-- ESTA LÍNEA ES CRUCIAL PARA DOCKER
   reactStrictMode: true,
   eslint: { ignoreDuringBuilds: false },
   typescript: { ignoreBuildErrors: false },
   images: {
-    // Payload sirve medios ya convertidos a WebP/AVIF (ver colección Media);
-    // esto solo permite el propio origen del sitio.
     remotePatterns: [],
   },
 }
 
-export default nextConfig
+export default withPayload(nextConfig)

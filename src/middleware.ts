@@ -45,8 +45,15 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Todas las rutas excepto assets estáticos de Next.
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    /*
+     * Aplica a todas las rutas EXCEPTO:
+     * - api (Rutas de API)
+     * - _next/static (Archivos estáticos)
+     * - _next/image (Optimización de imágenes)
+     * - favicon.ico (Icono)
+     * - admin (Panel de Payload)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|admin).*)',
   ],
 }
 

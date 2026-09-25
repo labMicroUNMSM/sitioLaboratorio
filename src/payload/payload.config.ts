@@ -1,3 +1,4 @@
+import sharp from 'sharp'
 import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
@@ -54,6 +55,7 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI,
     },
+    push: true
   }),
 
   plugins: [
@@ -61,7 +63,7 @@ export default buildConfig({
       collections: { media: true },
       bucket: process.env.S3_BUCKET ?? '',
       config: {
-        endpoint: process.env.S3_ENDPOINT,
+        endpoint: process.env.S3_ENDPOINT || '',
         region: process.env.S3_REGION ?? 'us-east-1',
         credentials: {
           accessKeyId: process.env.S3_ACCESS_KEY_ID ?? '',
@@ -73,6 +75,7 @@ export default buildConfig({
   ],
 
   secret: process.env.PAYLOAD_SECRET ?? '',
+  sharp,
 
   typescript: {
     outputFile: 'src/payload/payload-types.ts',

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { localizedTextSchema, localizedRichTextSchema, isoDateSchema, eliminadoEnSchema } from './common'
+import { localizedTextSchema, isoDateSchema, eliminadoEnSchema } from './common'
 
 export const patenteSchema = z.object({
   id: z.string().uuid().optional(),

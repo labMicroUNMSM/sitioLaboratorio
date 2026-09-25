@@ -36,8 +36,6 @@ function withProyectoRules<T extends typeof proyectoBaseSchema>(schema: T) {
 }
 
 export const proyectoSchema = withProyectoRules(proyectoBaseSchema)
-export const proyectoCreateSchema = withProyectoRules(
-  proyectoBaseSchema.omit({ id: true, eliminado_en: true }),
-)
+export const proyectoCreateSchema = proyectoBaseSchema.omit({ id: true, eliminado_en: true })
 
 export type Proyecto = z.infer<typeof proyectoSchema>
