@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { doiSchema, urlSchema, eliminadoEnSchema } from './common'
 
-export const publicacionSchema = z.object({
+const publicacionBase = z.object({
   id: z.string().uuid().optional(),
   titulo: z.string().min(1),
   autores: z.string().min(1), // texto completo, tal como aparece en la revista
@@ -13,11 +13,21 @@ export const publicacionSchema = z.object({
   url_acceso_abierto: urlSchema.optional(),
   tipo: z.enum(['articulo', 'capitulo', 'conferencia', 'preprint']),
   lineas: z.array(z.string().uuid()).default([]),
-  bibtex_raw: z.string().min(1), // procedencia, tal como se importó (M3)
+  bibtex_raw: z.string().min(1).nullish(), // Solo existe si se importó un original (M3).
   import_batch: z.string().uuid().nullable().default(null), // se llena en M3
   eliminado_en: eliminadoEnSchema.default(null),
 })
 
-export type Publicacion = z.infer<typeof publicacionSchema>
+export function procedenciaValida(lote: unknown, original: string | null | undefined) {
+  return !lote || Boolean(original?.trim())
+}
 
-export const publicacionCreateSchema = publicacionSchema.omit({ id: true, eliminado_en: true })
+const validarLote = (data: Pick<z.infer<typeof publicacionBase>, 'import_batch' | 'bibtex_raw'>) =>
+  procedenciaValida(data.import_batch, data.bibtex_raw)
+const errorLote = { message: 'Una importación requiere su BibTeX original.', path: ['bibtex_raw'] }
+export const publicacionSchema = publicacionBase.refine(validarLote, errorLote)
+export const publicacionCreateSchema = publicacionBase
+  .omit({ id: true, eliminado_en: true })
+  .refine(validarLote, errorLote)
+
+export type Publicacion = z.infer<typeof publicacionSchema>

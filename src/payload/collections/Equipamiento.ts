@@ -1,11 +1,12 @@
 import type { CollectionConfig } from 'payload'
+import { accesoContenido, eliminadoEn } from '../accesoContenido'
 import { CATEGORIAS_EQUIPAMIENTO } from '../../lib/taxonomias'
 
 export const Equipamiento: CollectionConfig = {
   slug: 'equipamiento',
   labels: { singular: 'Equipamiento', plural: 'Equipamiento' },
   admin: { useAsTitle: 'nombre', defaultColumns: ['nombre', 'categoria', 'disponible_colaboracion'] },
-  access: { read: () => true },
+  access: accesoContenido(),
   fields: [
     { name: 'nombre', type: 'text', required: true },
     { name: 'categoria', type: 'select', required: true, options: [...CATEGORIAS_EQUIPAMIENTO] },
@@ -19,6 +20,6 @@ export const Equipamiento: CollectionConfig = {
     { name: 'capacidades', type: 'richText', localized: true },
     { name: 'disponible_colaboracion', type: 'checkbox', defaultValue: false },
     { name: 'orden', type: 'number', defaultValue: 0 },
-    { name: 'eliminado_en', type: 'date', admin: { hidden: true } },
+    eliminadoEn,
   ],
 }

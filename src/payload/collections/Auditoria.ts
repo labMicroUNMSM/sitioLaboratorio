@@ -12,7 +12,7 @@ export const Auditoria: CollectionConfig = {
   slug: 'auditoria',
   access: {
     read: ({ req }) => req.user?.rol === 'admin',
-    create: () => true, // la escritura la hacen hooks del sistema, no un usuario a mano
+    create: () => false, // Los hooks del sistema escriben mediante la Local API privilegiada.
     update: () => false,
     delete: () => false,
   },

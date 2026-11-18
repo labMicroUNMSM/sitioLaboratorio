@@ -1,12 +1,11 @@
 import type { CollectionConfig } from 'payload'
+import { accesoContenido, eliminadoEn } from '../accesoContenido'
 
 export const Noticia: CollectionConfig = {
   slug: 'noticias',
   labels: { singular: 'Noticia', plural: 'Noticias' },
   admin: { useAsTitle: 'titulo', defaultColumns: ['titulo', 'fecha_publicacion', 'estado'] },
-  access: {
-    read: ({ req }) => Boolean(req.user) || { estado: { equals: 'publicado' } },
-  },
+  access: accesoContenido({ estado: { equals: 'publicado' } }),
   versions: { drafts: { schedulePublish: true } }, // soporta estado "programado"
   indexes: [{ fields: ['estado', 'fecha_publicacion'] }],
   fields: [
@@ -31,6 +30,6 @@ export const Noticia: CollectionConfig = {
       defaultValue: 'borrador',
       options: ['borrador', 'revision', 'programado', 'publicado', 'archivado'],
     },
-    { name: 'eliminado_en', type: 'date', admin: { hidden: true } },
+    eliminadoEn,
   ],
 }

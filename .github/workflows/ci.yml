@@ -30,8 +30,6 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - uses: actions/setup-node@v4
         with:
@@ -54,7 +52,9 @@ jobs:
         run: pnpm build
 
       - name: Auditoría de accesibilidad (pa11y-ci)
+        env:
+          PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
         run: |
-          pnpm exec next start & \
-          npx wait-on http://localhost:3000 && \
+          pnpm exec next start &
+          pnpm exec wait-on --timeout 60000 http://localhost:3000
           pnpm exec pa11y-ci --config .pa11yci.json
