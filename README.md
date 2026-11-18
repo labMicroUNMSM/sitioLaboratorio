@@ -91,30 +91,24 @@ listo el punto de extensión (`Pagina` genérica, `FIELD_ENCRYPTION_KEY` en
 
 ## Estado de M0
 
+Las pruebas en navegador, Compose y GitHub Actions se registran en
+[Estado de M0](docs/ESTADO-M0.md).
+
 | Sub-tarea | Estado |
 |---|---|
 | M0.1 Repositorio + tooling + ADR-0001/0002 | Hecho |
 | M0.2 Docker Compose, arranque ≤3 comandos | Hecho |
-| M0.3 Payload 3 + Postgres + localización | Config lista; **falta wirear rutas de admin/API** (ver nota abajo) |
+| M0.3 Payload 3 + Postgres + localización | Panel y API integrados. Migración inicial probada en una base nueva. |
 | M0.4 7 colecciones + infraestructura + Zod | Hecho |
 | M0.5 Roles y permisos + MFA admin | Reglas definidas; **falta confirmar mecanismo TOTP real de la versión instalada** |
 | M0.6 Tokens + primitivos + Header/Footer | Hecho (primitivos de UI aún no extraídos como librería de componentes) |
-| M0.7 Cabeceras de seguridad + accesibilidad de origen | Hecho; pendiente correr `pa11y-ci` contra un build real |
-| M0.8 CI + staging público | CI listo (`.github/workflows/ci.yml`); **falta el destino de staging real** |
+| M0.7 Cabeceras de seguridad + accesibilidad de origen | La portada pasa pa11y-ci en producción. Sigue pendiente revisar la CSP de desarrollo. |
+| M0.8 CI + staging público | CI verificado en el PR. Falta el staging público. |
 | M0.9 README + ADRs | Este archivo + ADR-0001/0002/0003 |
 
-### Antes de dar M0 por cerrado, faltan 3 cosas concretas
-1. **Wirear las rutas de Payload** en `src/app/(payload)/` — ver
-   `NOTA-INTEGRACION.md` en esa carpeta. Sin esto no hay panel de admin.
-2. **Confirmar MFA real**: verificar si la versión de Payload 3 instalada trae
-   TOTP nativo o si hace falta un plugin — el hook en `Usuario.ts` ya bloquea
-   guardar un admin sin `mfa_habilitado`, pero eso es la regla de negocio, no
-   el mecanismo de verificación en sí.
-3. **Correr `pnpm install`** una vez y fijar el lockfile real (`pnpm-lock.yaml`)
-   — las versiones en `package.json` son un punto de partida razonable, no
-   verificadas contra el registro de npm al momento de generarse este
-   andamiaje; revísalas contra las últimas releases estables antes de instalar
-   en serio.
+Siguen pendientes el segundo factor real del administrador, las pruebas de
+permisos por rol y la compatibilidad de Next con el rango declarado por
+la UI de Payload.
 
 ## Convenciones
 

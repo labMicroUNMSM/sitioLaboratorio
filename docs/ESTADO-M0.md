@@ -1,5 +1,57 @@
 # Estado de M0
 
+## GitHub Actions y almacenamiento en Compose · 18 de noviembre de 2026
+
+El [PR en borrador hacia main](https://github.com/labMicroUNMSM/sitioLaboratorio/pull/1)
+activó el workflow. En `febccfa` pasaron pnpm, tipos, lint, test y build. La
+auditoría falló con `No usable sandbox!` al iniciar el Chromium incluido con
+Puppeteer. Con el Chrome instalado en el runner, axe señaló dos
+`aria-allowed-attr` en los marcadores del encabezado. Al añadirles `role="img"`,
+pasó la auditoría de la portada con axe y HTML CodeSniffer. La suite de Vitest
+sigue teniendo una prueba. [Ejecución sobre el encabezado corregido](https://github.com/labMicroUNMSM/sitioLaboratorio/actions/runs/44345418550).
+
+Docker Desktop 4.99.0 respondió desde WSL con Engine 29.9.3 y Compose 5.7.0.
+El primer build del clon limpio falló en `COPY` con `"/app/public": not found`.
+El registro de Quay respondió `401 UNAUTHORIZED` al pedir MinIO. El Dockerfile
+prepara el directorio público y Compose compila el servidor y el cliente desde
+versiones fijas de MinIO. Un servicio de inicialización crea el bucket privado
+de forma idempotente. [Distribución oficial de MinIO](https://github.com/minio/minio/releases/tag/RELEASE.2025-10-15T17-29-55Z).
+
+Con PostgreSQL vacío, la API devolvió `relation "media" does not exist`.
+Se generó la migración inicial con Payload 3.90.2. El standalone la ejecuta
+en producción cuando se configura `PAYLOAD_RUN_MIGRATIONS=true`. Se probó en
+PostgreSQL 16.16, en el proyecto aislado `sitio-m0-almacen`. Solo la app
+publica puerto en el host, en `127.0.0.1:3102`.
+
+En Chromium, un editor temporal intentó guardar un PNG de 900 × 450 sin texto
+alternativo. El panel mostró la validación, la API devolvió 400 y Media siguió
+con cero registros. Con el texto alternativo, el mismo archivo obtuvo 201.
+La ficha 1 mostró `m0-bandas.webp`. El navegador decodificó el original y su
+SHA-256 coincidió con el objeto leído directamente del bucket `m0-medios`.
+MinIO también contenía las variantes de 400 y 800 px.
+
+Se construyeron las imágenes desde otro clon limpio de `c565a23`. Tras
+`down` y `up -d --wait`, los tres contenedores tenían identificadores nuevos.
+En una sesión nueva de Chromium, el mismo editor inició sesión y abrió la
+ficha 1, su texto alternativo y el original de 900 × 450. El SHA-256 del
+WebP seguía siendo `cffbd6d8074f1cc204bfac730579a0a5a7054b6fd69d0bc9493a8c6c722a9dbb`.
+Desde Windows respondieron ambas portadas (3101 y 3102) y el WebP (200,
+986 bytes). Pasaron instalación congelada, tipos, lint, test, build y auditoría
+en [Actions sobre el código probado](https://github.com/labMicroUNMSM/sitioLaboratorio/actions/runs/44347255963).
+
+En la máquina de prueba, desde WSL:
+
+```bash
+cd ~/.local/share/sitiolaboratorio/m0-compose
+./compose ps
+./compose down
+./compose up -d --wait
+```
+
+El directorio privado conserva la configuración y los datos de acceso del
+editor en `editor.txt`. Los datos de PostgreSQL y MinIO residen en los volúmenes
+`sitio-m0-almacen_postgres_data` y `sitio-m0-almacen_minio_data`.
+
 ## Navegación y controles locales · 18 de noviembre de 2026
 
 El encabezado conserva el enlace a Inicio y los marcadores institucionales. En el
