@@ -19,12 +19,14 @@ export function Header() {
           className="flex items-center gap-3 rounded-sm focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]"
         >
           <span
+            role="img"
             aria-label="Marcador de posición: escudo de la UNMSM (pendiente de autorización de Imagen Institucional)"
             className="flex h-10 w-10 items-center justify-center rounded-sm border border-oro-700/60 bg-guinda-900 text-xs text-oro-200"
           >
             UNMSM
           </span>
           <span
+            role="img"
             aria-label="Marcador de posición: logo de la Facultad de Ciencias Biológicas"
             className="flex h-10 w-16 items-center justify-center rounded-sm border border-oro-700/60 bg-guinda-900 text-[10px] text-oro-200"
           >
