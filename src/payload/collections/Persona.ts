@@ -1,13 +1,12 @@
 import type { CollectionConfig } from 'payload'
+import { accesoContenido, eliminadoEn } from '../accesoContenido'
 import { ROLES_PERSONA, ROLES_PERSONA_LABEL } from '../../lib/taxonomias'
 
 export const Persona: CollectionConfig = {
   slug: 'personas',
   labels: { singular: 'Persona', plural: 'Personas' },
   admin: { useAsTitle: 'nombre_completo', defaultColumns: ['nombre_completo', 'rol', 'activo'] },
-  access: {
-    read: ({ req }) => Boolean(req.user) || { activo: { equals: true } },
-  },
+  access: accesoContenido({ activo: { equals: true } }),
   fields: [
     { name: 'nombre_completo', type: 'text', required: true },
     { name: 'slug', type: 'text', required: true, unique: true, index: true },
@@ -36,6 +35,6 @@ export const Persona: CollectionConfig = {
     { name: 'lineas', type: 'relationship', relationTo: 'lineas-investigacion', hasMany: true },
     { name: 'orden', type: 'number', defaultValue: 0 },
     { name: 'activo', type: 'checkbox', defaultValue: true },
-    { name: 'eliminado_en', type: 'date', admin: { hidden: true } },
+    eliminadoEn,
   ],
 }

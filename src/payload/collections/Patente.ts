@@ -1,10 +1,11 @@
 import type { CollectionConfig } from 'payload'
+import { accesoContenido, eliminadoEn } from '../accesoContenido'
 
 export const Patente: CollectionConfig = {
   slug: 'patentes',
   labels: { singular: 'Patente', plural: 'Patentes' },
   admin: { useAsTitle: 'titulo', defaultColumns: ['titulo', 'estado', 'oficina'] },
-  access: { read: () => true },
+  access: accesoContenido(),
   fields: [
     { name: 'titulo', type: 'text', required: true, localized: true },
     { name: 'estado', type: 'select', required: true, options: ['en_tramite', 'concedida'] },
@@ -13,6 +14,6 @@ export const Patente: CollectionConfig = {
     { name: 'fecha_solicitud', type: 'date', required: true },
     { name: 'inventores', type: 'relationship', relationTo: 'personas', hasMany: true, required: true },
     { name: 'resumen', type: 'textarea', required: true, localized: true },
-    { name: 'eliminado_en', type: 'date', admin: { hidden: true } },
+    eliminadoEn,
   ],
 }

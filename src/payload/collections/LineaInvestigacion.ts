@@ -1,12 +1,11 @@
 import type { CollectionConfig } from 'payload'
+import { accesoContenido, eliminadoEn } from '../accesoContenido'
 
 export const LineaInvestigacion: CollectionConfig = {
   slug: 'lineas-investigacion',
   labels: { singular: 'Línea de investigación', plural: 'Líneas de investigación' },
   admin: { useAsTitle: 'titulo', defaultColumns: ['titulo', 'destacada', 'estado'] },
-  access: {
-    read: ({ req }) => Boolean(req.user) || { estado: { equals: 'publicado' } },
-  },
+  access: accesoContenido({ estado: { equals: 'publicado' } }),
   versions: { drafts: true }, // permite guardar borrador sin publicar
   fields: [
     { name: 'titulo', type: 'text', required: true, localized: true },
@@ -27,6 +26,6 @@ export const LineaInvestigacion: CollectionConfig = {
     // de esta colección. Se resuelven con una consulta filtrada desde el lado
     // de Persona/Proyecto/Publicacion (que sí tienen el campo `lineas`), para
     // no duplicar la relación en ambos lados. Ver src/lib/relations.ts (M1/M2).
-    { name: 'eliminado_en', type: 'date', admin: { hidden: true } },
+    eliminadoEn,
   ],
 }

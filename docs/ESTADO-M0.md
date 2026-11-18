@@ -1,5 +1,70 @@
 # Estado de M0
 
+## Permisos del editor por colección · 18 de noviembre de 2026
+
+Se partió de `4b9b670` y se usó el proyecto Compose `sitio-m0-permisos`,
+con PostgreSQL, MinIO, bucket y cuenta ficticia propios en `127.0.0.1:3103`.
+Se comprobó el rol con la sesión de Chromium. Las altas y ediciones de contenido
+se hicieron con los formularios del panel, seguidas de una recarga y una
+consulta del listado. Las denegaciones REST se probaron con la cookie de esa
+misma sesión sobre registros existentes.
+
+| Colección | Consultar | Crear | Editar | Borrar físicamente | Operación o evidencia adicional |
+|---|---|---|---|---|---|
+| Líneas de investigación | Sí | Sí | Sí | 403 | Guardó borrador, publicó, archivó y restauró la versión publicada desde el historial. |
+| Personas | Sí | Sí | Sí | 403 | Editó nombre. Una segunda ficha marcada como retirada quedó fuera de la lista y rechazó la edición. |
+| Proyectos | Sí | Sí | Sí | 403 | Guardó tipo, estado, financiador y fecha. |
+| Publicaciones | Sí | Sí | Sí | 403 | Alta manual con DOI y sin BibTeX. Una ficha con procedencia previa conservó el original y el lote. |
+| Patentes | Sí | Sí | Sí | 403 | Guardó expediente, fecha e inventor vinculado a una Persona. |
+| Equipamiento | Sí | Sí | Sí | 403 | Seleccionó una imagen existente de Media y guardó la ficha. |
+| Noticias | Sí | Sí | Sí | 403 | Guardó borrador, publicó, archivó y restauró la versión publicada desde el historial. |
+| Páginas | Sí | Sí | Sí | 403 | Editó el título y pasó de borrador a publicado. |
+| Media | Sí | Sí | Sí | 403 | La misma imagen obtuvo 400 sin alt y 201 con alt. Se editaron los créditos y se abrió el WebP después del DELETE denegado. |
+| Usuarios | Sí | 403 | 403 | 403 | El editor abrió la ficha de otro usuario de referencia. La cuenta conservó sus valores. |
+| Auditoría | 403 | 403 | 403 | 403 | Ausente del menú. La ruta del panel mostró 404. La API denegó lista y ficha. El asiento de control se conservó. |
+
+**Expectativa y decisiones abiertas.** El traspaso pide crear un registro de
+cada colección. En la rama, el alta de usuarios corresponde al administrador y
+la bitácora está reservada al sistema. Las nueve altas editoriales y esas dos
+excepciones quedaron comprobadas. Las reglas actuales permiten al editor cambiar
+el estado de Páginas, Líneas y Noticias. En las dos últimas se seleccionó
+`estado` y se usó el botón de publicación de Payload. Archivar cambió el
+estado editorial; restaurar una versión recuperó el estado anterior. Queda por
+decidir si se requiere aprobación de un administrador para esas transiciones,
+y qué rol podrá retirar y reincorporar fichas mediante `eliminado_en`. El
+desbloqueo de cuentas es otra operación independiente: Payload declara
+`unlock: true` al editor y muestra **Force Unlock**. Falta definir su responsable.
+La ejecución futura de publicaciones programadas queda sin verificar.
+
+**Fallos reproducidos y correcciones.**
+
+- En la revisión inicial, borrar una Persona ficticia devolvió 200 y su ficha
+  pasó a 404. Otra Persona con fecha de baja seguía en el listado del editor.
+  Las nueve colecciones editoriales ahora deniegan el borrado físico, filtran
+  las fichas retiradas en lectura y edición ordinarias, y reservan la fecha de
+  baja al servidor. Media incorpora la misma marca. Después del cambio, las
+  nueve peticiones DELETE dieron 403 y las nueve fichas coincidieron con su
+  contenido previo.
+- El editor pudo crear manualmente un asiento de auditoría (201), aunque la
+  colección reserva esa escritura a los hooks del sistema. El alta manual
+  ahora devuelve 403. Sigue pendiente el refuerzo de la bitácora a nivel de BD
+  que menciona el traspaso.
+- Al guardar una Publicación manual, el panel mostraba `The following field is
+  invalid: Bibtex_raw` y el campo estaba bloqueado. La API también aceptaba
+  cambios en la procedencia. Ahora el alta manual admite procedencia nula,
+  un lote de importación requiere su original y el editor no puede escribir
+  el BibTeX ni el lote. La migración conserva los valores anteriores. Para
+  revertirla hay que resolver antes los registros manuales con BibTeX nulo
+  y los medios con baja lógica.
+
+La evidencia anterior de Páginas acreditaba el alta y la recuperación del texto
+Lexical tras recargar. La de Media acreditaba alt obligatorio, alta, lectura y
+persistencia del objeto tras recrear contenedores. Esta ronda comprobó también
+la edición de fichas existentes y el rechazo del borrado por API. Pasaron la
+instalación con lockfile congelado, typecheck, lint, las 12 pruebas y el build.
+El staging público, MFA, compatibilidad Next/Payload y CSP de desarrollo
+siguen pendientes.
+
 ## Launcher de Windows y WSL 2 · 18 de noviembre de 2026
 
 El acceso directo del escritorio abre `sitioLaboratorio.cmd`. En la instalación
