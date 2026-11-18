@@ -15,9 +15,12 @@ cp .env.example .env      # 1. completar PAYLOAD_SECRET, FIELD_ENCRYPTION_KEY, e
 docker compose up --build # 2. levanta app + PostgreSQL + MinIO
 ```
 
-Con eso, la app queda arriba en `http://localhost:3000` y el panel de admin en
-`http://localhost:3000/admin` (una vez wireado el punto de integración
-descrito en `src/app/(payload)/NOTA-INTEGRACION.md`, ver estado más abajo).
+La portada abre en `http://localhost:3000` y Payload en `http://localhost:3000/admin`.
+Con volúmenes nuevos, Compose crea el bucket indicado por `S3_BUCKET` y
+Payload aplica la migración inicial al abrir el panel. La plantilla habilita
+esto con `PAYLOAD_RUN_MIGRATIONS=true`. Para una base anterior creada mediante
+`push` de desarrollo, revisa el esquema y su historial antes de activar esa opción.
+`docker compose down` conserva los volúmenes para el siguiente arranque.
 
 Para desarrollo activo con recarga en caliente (fuera de Docker, apuntando a
 la Postgres del compose):
