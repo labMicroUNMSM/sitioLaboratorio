@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")"
+exec docker compose --env-file "$PWD/prueba.env" -p sitio-m0-almacen \
+  -f "$PWD/repo-final/docker-compose.yml" -f "$PWD/compose.prueba.yml" "$@"

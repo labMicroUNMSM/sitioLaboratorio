@@ -1,0 +1,10 @@
+services:
+  app:
+    ports: !override
+      - '127.0.0.1:3102:3000'
+    env_file: !override
+      - ../prueba.env
+  postgres:
+    ports: !reset []
+  minio:
+    ports: !reset []

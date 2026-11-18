@@ -5,7 +5,45 @@ sistemas de la UNMSM** (ver [ADR-0001](docs/adr/ADR-0001-independencia-de-la-uni
 base de datos y CMS propios, sin dependencias de APIs universitarias para
 mostrar contenido.
 
-## Arranque local (≤3 comandos)
+## Launcher de Windows con WSL 2
+
+**Uso diario.** Abre el acceso directo **sitioLaboratorio** del escritorio o
+`sitioLaboratorio.cmd` en el clon. Elige **1** para abrir la portada, **2**
+para abrir Payload, **3** para consultar el estado, **4** para detener el sitio
+y **5** para cerrar el menú. Las opciones 1 y 2 arrancan el sitio si hace
+falta. La opción 4 conserva el editor y los medios. Puedes cerrar el menú
+mientras trabajas en el navegador.
+
+**Primera instalación.** Con Git para Windows, WSL 2 y Docker Desktop
+instalados, abre Docker Desktop y habilita la integración con tu distribución
+Linux predeterminada. Esta debe tener Python 3 y Git. Desde PowerShell, en la
+carpeta de Windows donde quieres guardar el clon, ejecuta:
+
+```powershell
+git clone --branch fix/integracion-panel-payload https://github.com/labMicroUNMSM/sitioLaboratorio.git
+cd sitioLaboratorio
+.\sitioLaboratorio.cmd preparar
+```
+
+La preparación crea el acceso directo en el escritorio configurado por Windows
+(incluido OneDrive). En una instalación nueva prepara las imágenes, genera
+secretos privados y reserva los volúmenes. Entonces puedes abrir el icono y
+registrar al primer usuario con la opción 2. Si ya usas `sitio-m0-almacen`,
+la misma orden comprueba la instalación y crea el acceso directo, conservando
+tu usuario y tus archivos. La portada está en `http://127.0.0.1:3102/` y
+el panel en `http://127.0.0.1:3102/admin`.
+
+El menú usa el wrapper de WSL en `~/.local/share/sitiolaboratorio/m0-compose/compose`.
+Allí viven el clon de ejecución `repo-final`, `prueba.env` y un ajuste local
+de puertos sobre el Compose del repositorio. Conserva ese directorio y los
+volúmenes `sitio-m0-almacen_postgres_data` y `sitio-m0-almacen_minio_data`.
+Si falta alguno, comprueba que elegiste la distribución WSL y el motor de Docker
+originales antes de recuperar tu respaldo. Si el puerto 3102 está ocupado,
+cierra el otro servicio y vuelve a elegir 1 o 2. Si moviste el clon de Windows,
+ejecuta `.\sitioLaboratorio.cmd preparar` desde su nueva ubicación para
+actualizar el acceso directo.
+
+## Arranque directo con Docker Compose
 
 Requisitos: Docker y Docker Compose. Node solo hace falta si vas a desarrollar
 fuera del contenedor (ver más abajo).

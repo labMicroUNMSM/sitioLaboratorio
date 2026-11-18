@@ -1,0 +1,3 @@
+*.cmd text eol=crlf
+*.py text eol=lf
+scripts/compose text eol=lf
