@@ -1,5 +1,39 @@
 # Estado de M0
 
+## Launcher de Windows y WSL 2 · 18 de noviembre de 2026
+
+El acceso directo del escritorio abre `sitioLaboratorio.cmd`. En la instalación
+existente se comprobó el wrapper privado, su proyecto `sitio-m0-almacen` y
+los volúmenes etiquetados de PostgreSQL y MinIO. Desde `cmd.exe`, dos inicios
+consecutivos abrieron la portada y conservaron el mismo contenedor. El menú
+mostró los tres servicios activos, los detuvo y mostró los tres detenidos.
+Un proceso de prueba ocupó 3102 durante la parada y el launcher avisó del
+conflicto. Al liberarlo, **Abrir panel** arrancó el sitio. El puerto 3101
+respondió también durante la parada.
+
+En una sesión nueva de Google Chrome 157 en Windows el editor existente
+inició sesión y abrió Media 1. El campo conservó «Tres bandas verticales de
+color guinda, oro y azul.» y el navegador decodificó el WebP de 900 × 450.
+Su SHA-256 coincidió con el registrado en la prueba de Compose. Se comprobó
+el destino del acceso directo de OneDrive. Queda la prueba personal del doble
+clic en el escritorio.
+
+Desde un clon de Windows en una ruta con espacios se probó el menú. Para
+ensayar una primera instalación en el mismo equipo se cambiaron únicamente
+el directorio privado, el nombre del proyecto y el puerto (3112) en la copia
+de prueba. La preparación construyó las imágenes, creó volúmenes propios y
+permitió abrir el formulario inicial. Se repitió la preparación con éxito.
+Al retirar el archivo de configuración o el volumen de PostgreSQL de ese
+entorno, el launcher indicó qué faltaba. Tanto el inicio como la preparación
+rehusaron reemplazar el volumen perdido. El motor inaccesible se simuló con
+un socket inexistente y se comprobó el mensaje sobre Docker Desktop.
+
+De los cinco criterios de M0, siguen pendientes el staging público y completar
+las operaciones del editor por colección según sus permisos. Se han probado
+Páginas y Media, incluido el rechazo de una imagen sin texto alternativo.
+La auditoría automatizada cubre la portada. También siguen abiertos el MFA
+real del administrador, la compatibilidad Next/Payload y la CSP de desarrollo.
+
 ## GitHub Actions y almacenamiento en Compose · 18 de noviembre de 2026
 
 El [PR en borrador hacia main](https://github.com/labMicroUNMSM/sitioLaboratorio/pull/1)
