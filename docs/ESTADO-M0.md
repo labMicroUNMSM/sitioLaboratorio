@@ -1,4 +1,31 @@
-# M0 · Integración del panel de Payload
+# Estado de M0
+
+## Navegación y controles locales · 18 de noviembre de 2026
+
+El encabezado conserva el enlace a Inicio y los marcadores institucionales. En el
+standalone, Chromium comprobó a 390 y 1280 px que el salto al contenido y el
+enlace a Inicio reciben foco con Tab. Inicio abre la portada (200). Hubo cero
+peticiones a las cuatro secciones pendientes y cero respuestas HTTP de error al
+cargar la portada. En una base aislada, `/admin` mostró el formulario inicial.
+Cada sección volverá al menú cuando su ruta pública esté disponible.
+
+En un clon limpio, con Node 22.22.2 y pnpm 9.12.0, pasaron la instalación con
+`--frozen-lockfile`, `typecheck`, `lint` (0 errores y 0 advertencias), `test`
+(una prueba) y `build`. ESLint rechazó un `any` explícito y un `@ts-ignore` sin
+justificación en una prueba de control. `FlatCompat` carga el preset de Next 15
+en ESLint 9 mediante `@eslint/eslintrc` 3.3.7, ya presente en el lockfile.
+
+El [run de GitHub sobre main](https://github.com/labMicroUNMSM/sitioLaboratorio/actions/runs/36085276049)
+falló por declarar dos versiones de pnpm. El workflow local ahora toma la versión
+de `packageManager`. Su ejecución en GitHub queda pendiente de publicación.
+Next 15.5.26 sigue fuera del rango de la UI de Payload 3.90.2.
+
+Compose validó el modelo con `config --quiet` en una copia limpia. Docker Desktop
+no respondió en el pipe del motor Linux. El build local tampoco produjo el
+directorio `public/` que el Dockerfile intenta copiar. Quedan pendientes el
+build de la imagen, el arranque completo y una carga real a MinIO.
+
+## Integración del panel · 17 de noviembre de 2026
 
 Prueba del 17 de noviembre de 2026 sobre la base `50e5c8b`. Se usaron Node
 22.22.2, pnpm 9.12.0, el lockfile del repositorio y PostgreSQL 16.15 temporal
@@ -20,7 +47,7 @@ error de contexto desapareció de las vistas probadas. La secuencia comprobada
 para regenerar el mapa está en la [nota de integración](../src/app/%28payload%29/NOTA-INTEGRACION.md).
 
 `typecheck`, `test` (una prueba de inicialización) y `build` pasaron antes y
-después. `lint` sigue saliendo con código 2 en ESLint 9.39.5 y
+después. En aquella revisión, `lint` salió con código 2 en ESLint 9.39.5 y
 `@rushstack/eslint-patch`: `Failed to patch ESLint because the calling module was not recognized.`
 
 **Pendientes independientes.** Next 15.5.26 queda fuera del rango declarado por

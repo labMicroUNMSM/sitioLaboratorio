@@ -1,7 +1,10 @@
-import next from 'eslint-config-next'
+import { FlatCompat } from '@eslint/eslintrc'
 
-export default [
-  ...next(),
+const compat = new FlatCompat({ baseDirectory: import.meta.dirname })
+
+const config = [
+  { ignores: ['.next/**'] },
+  ...compat.config({ extends: ['next'], plugins: ['@typescript-eslint'] }),
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
@@ -12,3 +15,5 @@ export default [
     },
   },
 ]
+
+export default config
