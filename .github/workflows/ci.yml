@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main, fix/integracion-panel-payload]
+    branches: [main, fix/integracion-panel-payload, feat/m1-equipo]
 
 jobs:
   build-and-test:
@@ -66,6 +66,9 @@ jobs:
         env:
           PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
         run: |
+          psql "$DATABASE_URI" -v ON_ERROR_STOP=1 -c 'CREATE DATABASE lineas_ci'
+          export DATABASE_URI="${DATABASE_URI%/*}/lineas_ci"
+          export PAYLOAD_RUN_MIGRATIONS=true
           pnpm exec next start &
           pnpm exec wait-on --timeout 60000 http://localhost:3000
           curl -fsS http://localhost:3000/equipo | grep -F 'Aún no hay integrantes publicados.' > /dev/null
@@ -78,4 +81,7 @@ jobs:
           curl -fsS http://localhost:3000/equipo -o "$RUNNER_TEMP/equipo.html"
           grep -Fq 'Integrante visible CI' "$RUNNER_TEMP/equipo.html"
           if grep -Eq 'Ficha (inactiva|retirada) CI' "$RUNNER_TEMP/equipo.html"; then exit 1; fi
+          node scripts/comprobar-lineas-ci.mjs
+          psql "$DATABASE_URI" -v ON_ERROR_STOP=1 -c "UPDATE lineas_investigacion SET estado='publicado', eliminado_en=now() WHERE slug='archivo-ci'"
+          test "$(curl -sS -o /dev/null -w '%{http_code}' http://localhost:3000/lineas-investigacion/archivo-ci)" = 404
           pnpm exec pa11y-ci --config .pa11yci.json

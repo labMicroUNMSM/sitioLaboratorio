@@ -6,6 +6,8 @@
   },
   "urls": [
     "http://localhost:3000/",
-    "http://localhost:3000/equipo"
+    "http://localhost:3000/equipo",
+    "http://localhost:3000/lineas-investigacion",
+    "http://localhost:3000/lineas-investigacion/fenologia-del-bosque"
   ]
 }

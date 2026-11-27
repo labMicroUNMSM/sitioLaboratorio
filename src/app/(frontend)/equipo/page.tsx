@@ -59,7 +59,7 @@ export default async function Equipo() {
               doc.foto && typeof doc.foto === 'object' ? fotoTarjeta.parse(doc.foto) : null
             const archivo = foto?.sizes?.thumbnail?.filename || foto?.filename
             return (
-              <li key={doc.id} className="rounded-md border border-border bg-white p-6">
+              <li id={`persona-${doc.id}`} key={doc.id} className="rounded-md border border-border bg-white p-6">
                 {archivo ? (
                   <Image
                     unoptimized

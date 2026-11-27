@@ -11,8 +11,7 @@ export default function PaginaInicio() {
       </h1>
       <p className="mt-4 max-w-content font-body text-lg leading-relaxed text-ink-muted">
         Facultad de Ciencias Biológicas, Universidad Nacional Mayor de San Marcos. Conoce a los
-        integrantes del equipo. Próximamente encontrarás aquí las líneas de investigación y las
-        publicaciones del laboratorio.
+        integrantes del equipo y las líneas de investigación del laboratorio.
       </p>
     </div>
   )
