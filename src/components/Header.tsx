@@ -38,13 +38,19 @@ export function Header() {
             <span className="text-sm font-normal text-oro-200">en Ciencias Biológicas</span>
           </span>
         </Link>
-        <nav aria-label="Navegación principal">
-          <Link
-            href="/equipo"
-            className="inline-flex min-h-11 items-center rounded-sm px-3 font-body font-semibold underline decoration-oro-200 underline-offset-4 hover:bg-guinda-900"
-          >
-            Equipo
-          </Link>
+        <nav aria-label="Navegación principal" className="flex flex-wrap items-center">
+          {[
+            { href: '/equipo', titulo: 'Equipo' },
+            { href: '/lineas-investigacion', titulo: 'Líneas de investigación' },
+          ].map(({ href, titulo }) => (
+            <Link
+              key={href}
+              href={href}
+              className="inline-flex min-h-11 items-center rounded-sm px-3 font-body font-semibold underline decoration-oro-200 underline-offset-4 hover:bg-guinda-900"
+            >
+              {titulo}
+            </Link>
+          ))}
         </nav>
       </div>
     </header>

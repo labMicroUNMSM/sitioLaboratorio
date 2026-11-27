@@ -5,7 +5,9 @@ export const LineaInvestigacion: CollectionConfig = {
   slug: 'lineas-investigacion',
   labels: { singular: 'Línea de investigación', plural: 'Líneas de investigación' },
   admin: { useAsTitle: 'titulo', defaultColumns: ['titulo', 'destacada', 'estado'] },
-  access: accesoContenido({ estado: { equals: 'publicado' } }),
+  access: accesoContenido({
+    and: [{ estado: { equals: 'publicado' } }, { _status: { equals: 'published' } }],
+  }),
   versions: { drafts: true }, // permite guardar borrador sin publicar
   fields: [
     { name: 'titulo', type: 'text', required: true, localized: true },

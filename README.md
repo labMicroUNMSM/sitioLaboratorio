@@ -151,6 +151,12 @@ de formularios en reposo, derechos ARCO) se construye en M6. M0 solo deja
 listo el punto de extensión (`Pagina` genérica, `FIELD_ENCRYPTION_KEY` en
 `.env.example`). Esto no es asesoría legal.
 
+## Líneas de investigación
+
+El listado público está en `/lineas-investigacion`. Cada ficha reúne el resumen
+divulgativo, el detalle técnico y los participantes y trabajos relacionados.
+La vista previa local y las pruebas están en [Estado de M2](docs/ESTADO-M2.md).
+
 ## Equipo
 
 La primera sección pública está en `/equipo`. Las fichas se editan en
