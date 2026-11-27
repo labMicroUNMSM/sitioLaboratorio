@@ -10,9 +10,9 @@ export default function PaginaInicio() {
         Laboratorio de Investigación en Ciencias Biológicas
       </h1>
       <p className="mt-4 max-w-content font-body text-lg leading-relaxed text-ink-muted">
-        Facultad de Ciencias Biológicas, Universidad Nacional Mayor de San Marcos. Este sitio
-        está en construcción — vuelve pronto para conocer al equipo, las líneas de investigación
-        y las publicaciones del laboratorio.
+        Facultad de Ciencias Biológicas, Universidad Nacional Mayor de San Marcos. Conoce a los
+        integrantes del equipo. Próximamente encontrarás aquí las líneas de investigación y las
+        publicaciones del laboratorio.
       </p>
     </div>
   )

@@ -151,6 +151,12 @@ de formularios en reposo, derechos ARCO) se construye en M6. M0 solo deja
 listo el punto de extensión (`Pagina` genérica, `FIELD_ENCRYPTION_KEY` en
 `.env.example`). Esto no es asesoría legal.
 
+## Equipo
+
+La primera sección pública está en `/equipo`. Las fichas se editan en
+**Personas** del panel de Payload. La vista previa y sus comprobaciones están
+en [Estado de M1](docs/ESTADO-M1.md).
+
 ## Estado de M0
 
 Las pruebas en navegador, Compose y GitHub Actions se registran en
