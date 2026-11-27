@@ -51,6 +51,17 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Permisos de sesión y MFA con PostgreSQL
+        env:
+          PAYLOAD_RUN_MIGRATIONS: 'true'
+        run: |
+          export FIELD_ENCRYPTION_KEY="$(openssl rand -hex 32)"
+          node node_modules/next/dist/bin/next start -H 127.0.0.1 -p 3114 > "$RUNNER_TEMP/panel-mfa.log" 2>&1 &
+          panel=$!
+          trap 'kill "$panel" 2>/dev/null || true' EXIT
+          pnpm exec wait-on --timeout 60000 http://127.0.0.1:3114
+          node scripts/comprobar-mfa-ci.mjs
+
       - name: Auditoría de accesibilidad (pa11y-ci)
         env:
           PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome

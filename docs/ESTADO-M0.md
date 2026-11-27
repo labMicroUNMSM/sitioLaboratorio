@@ -1,5 +1,49 @@
 # Estado de M0
 
+## MFA del administrador · 27 de noviembre de 2026
+
+La rama y `origin` coincidían en `5852649`. El traspaso describía un prototipo
+con endpoints de MFA. En esta revisión de partida, Usuarios solo exigía
+marcar una casilla. La verificación siguiente usó producción standalone,
+PostgreSQL y MinIO propios del proyecto Compose `sitio-m0-mfa` en
+`127.0.0.1:3104`. Se prepararon cuentas ficticias con la versión anterior
+antes de aplicar la migración de MFA.
+
+| Comprobación | Resultado |
+|---|---|
+| Primer administrador | El primer registro creó un editor. El operador promovió esa cuenta con el script de primer administrador. Su sesión de editor anterior recibió 403 al consultar Auditoría. En Chromium pudo vincular su app tras acreditar la contraseña. |
+| Alta del autenticador | El formulario mostró QR y clave manual. Un código incorrecto obtuvo 401, una nueva solicitud siguió ofreciendo vinculación y Auditoría devolvió 403. El primer código válido abrió el dashboard y la consulta devolvió 200. |
+| Sesión nueva | Tras cerrar sesión, Auditoría volvió a 403. La contraseña sola pidió el código sin emitir cookie. Un código usado fue rechazado. El código nuevo abrió el listado de Auditoría en el panel y permitió consultar el mismo recurso por REST. |
+| Administrador antiguo | En la versión anterior tenía casilla marcada y una sesión administrativa válida. Tras migrar, su cookie y el login nativo por contraseña quedaron denegados. El panel pidió vincular por primera vez y solo concedió acceso al confirmar el código. |
+| Persistencia y editor | Después de reiniciar la aplicación, otro contexto de Chromium entró con el autenticador previamente vinculado. El editor entró con su contraseña, cambió el nombre de una Persona y lo recuperó al recargar. Auditoría siguió en 403 para el editor. |
+
+La API del formulario es `POST /api/usuarios/login-mfa`. Tanto la solicitud
+inicial como la confirmación comprueban la contraseña con Payload. El hook
+`beforeLogin` interviene antes de que Payload firme el JWT. La sesión de
+administrador necesita una confirmación asociada a su identificador. Las
+propuestas de alta caducan en cinco minutos. El secreto se cifra con
+AES-256-GCM y queda ligado a la cuenta. El servidor genera el QR localmente.
+El registro del periodo usado, la activación y el asiento de Auditoría
+comparten la transacción de la sesión. Los intentos fallidos tienen un
+límite independiente de cinco por cuenta en quince minutos.
+
+La migración elimina las marcas históricas y revoca las sesiones de los
+administradores. El nuevo login acepta la vinculación inicial usando la
+contraseña existente. Las cuentas ya vinculadas conservan el dispositivo.
+El README describe la promoción inicial. El rol de los siguientes usuarios
+se gestiona en el panel.
+
+**Controles.** Instalación con lockfile congelado, typecheck, lint, 19 pruebas
+de Vitest y build de producción. El workflow incluye además una prueba HTTP
+con PostgreSQL para la promoción, las sesiones antiguas, las respuestas sin
+cookie, la activación, la reutilización de códigos y el límite de intentos.
+
+**Decisión pendiente.** Designar quién autoriza recuperar el acceso cuando
+se pierde el autenticador, qué prueba de identidad exige y quién actúa si
+se trata del último administrador. No hay un restablecimiento del factor por
+contraseña o correo. Siguen abiertos el staging, la compatibilidad
+Next/Payload, la CSP de desarrollo y las decisiones de permisos de la ronda anterior.
+
 ## Permisos del editor por colección · 18 de noviembre de 2026
 
 Se partió de `4b9b670` y se usó el proyecto Compose `sitio-m0-permisos`,

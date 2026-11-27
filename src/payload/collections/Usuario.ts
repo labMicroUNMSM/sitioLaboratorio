@@ -1,21 +1,17 @@
 import type { CollectionConfig } from 'payload'
 
-/**
- * Usuario — colección de infraestructura (auth).
- * Argon2id lo maneja Payload internamente para el hash de contraseña.
- * MFA: Payload 3 no trae TOTP nativo listo para producción en todas las
- * versiones — verificar en M0.5 contra la versión instalada; si no está
- * disponible de forma nativa, se implementa como plugin/hook antes de cerrar
- * M0.5 (es un requisito no negociable del kit, no queda para después).
- */
+import { exigirMfa, filtrarSesiones, loginMfa } from '../mfa/login'
+
 export const Usuario: CollectionConfig = {
   slug: 'usuarios',
   auth: {
     // Ajustar tras confirmar versión: verifyEmail no es necesario (no hay
     // autoregistro público), pero sí bloqueo tras intentos fallidos.
+    useSessions: true,
     maxLoginAttempts: 5,
     lockTime: 15 * 60 * 1000,
   },
+  endpoints: [loginMfa],
   access: {
     read: ({ req }) => Boolean(req.user), // solo usuarios autenticados ven la lista de usuarios
     create: ({ req }) => req.user?.rol === 'admin',
@@ -37,13 +33,19 @@ export const Usuario: CollectionConfig = {
         { label: 'Editor', value: 'editor' },
       ],
       defaultValue: 'editor',
+      admin: {
+        description:
+          'El primer registro siempre crea un editor. Un operador promueve al primer administrador.',
+      },
     },
     {
       name: 'mfa_habilitado',
       type: 'checkbox',
       defaultValue: false,
+      access: { create: () => false, update: () => false },
       admin: {
-        description: 'Obligatorio para rol admin. Se valida en el hook beforeChange.',
+        readOnly: true,
+        description: 'Se activa al confirmar el primer código del autenticador.',
       },
     },
     {
@@ -53,12 +55,32 @@ export const Usuario: CollectionConfig = {
     },
   ],
   hooks: {
+    beforeLogin: [exigirMfa],
+    afterRead: [filtrarSesiones],
     beforeChange: [
-      ({ data }) => {
-        if (data.rol === 'admin' && !data.mfa_habilitado) {
-          throw new Error('MFA es obligatorio para el rol admin (principio no negociable, ver Parte A).')
-        }
+      ({ data, operation, originalDoc, req }) => {
+        if (operation === 'create' && !req.user) data.rol = 'editor'
+        if (originalDoc && data.rol && originalDoc.rol !== data.rol) data.sessions = []
+        delete data.mfa_habilitado
         return data
+      },
+    ],
+    afterChange: [
+      async ({ doc, previousDoc, operation, req }) => {
+        if (operation === 'update' && previousDoc.rol !== doc.rol && req.user) {
+          await req.payload.create({
+            collection: 'auditoria',
+            req,
+            overrideAccess: true,
+            data: {
+              accion: 'usuario.rol.cambiar',
+              coleccion_afectada: 'usuarios',
+              documento_id: String(doc.id),
+              usuario: req.user.id,
+              detalle: { anterior: previousDoc.rol, nuevo: doc.rol },
+            },
+          })
+        }
       },
     ],
   },

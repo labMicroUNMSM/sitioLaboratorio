@@ -120,6 +120,30 @@ panel, no están hardcodeadas en el esquema salvo donde afectan permisos
 - MFA obligatorio para el rol `admin` (`src/payload/collections/Usuario.ts`).
 - `alt` obligatorio en `Media`: el panel no permite guardar sin él.
 
+### Primer administrador y autenticador
+
+El primer registro crea un editor. Para promoverlo, el operador de la base
+ejecuta desde la raíz del clon el siguiente comando de WSL, eligiendo el
+wrapper de **su instalación** y sustituyendo el correo. Funciona mientras
+todavía no exista ningún administrador. La promoción cierra las sesiones
+anteriores y queda registrada en Auditoría.
+
+```bash
+~/.local/share/sitiolaboratorio/m0-compose/compose exec -T postgres psql -X -U laboratorio -d laboratorio_db -v correo='correo-del-editor@example.test' < scripts/primer-admin.sql
+```
+
+Al entrar en `/admin`, el administrador introduce su contraseña, escanea el QR
+en una app autenticadora y confirma el primer código. También puede introducir
+la clave manualmente. En ingresos posteriores introduce el código vigente de
+seis dígitos. Cada código sirve una vez. Los siguientes administradores se
+crean o promueven en Usuarios desde una sesión administrativa confirmada.
+
+El operador debe conservar la `FIELD_ENCRYPTION_KEY` de esa instalación junto
+con su respaldo seguro de la base. La clave consta de 32 bytes aleatorios en
+hexadecimal. Cambiarla sin recifrar las credenciales impide validar los
+autenticadores vinculados. Sigue pendiente acordar el procedimiento de
+recuperación por pérdida del dispositivo.
+
 ## Legal (Perú, Ley 29733)
 
 El cumplimiento pleno (aviso de privacidad, consentimiento granular, cifrado
@@ -138,15 +162,14 @@ Las pruebas en navegador, Compose y GitHub Actions se registran en
 | M0.2 Docker Compose, arranque ≤3 comandos | Hecho |
 | M0.3 Payload 3 + Postgres + localización | Panel y API integrados. Migración inicial probada en una base nueva. |
 | M0.4 7 colecciones + infraestructura + Zod | Hecho |
-| M0.5 Roles y permisos + MFA admin | Reglas definidas; **falta confirmar mecanismo TOTP real de la versión instalada** |
+| M0.5 Roles y permisos + MFA admin | Matriz de editor verificada. Administradores con contraseña y TOTP. Recuperación del dispositivo por definir. |
 | M0.6 Tokens + primitivos + Header/Footer | Hecho (primitivos de UI aún no extraídos como librería de componentes) |
 | M0.7 Cabeceras de seguridad + accesibilidad de origen | La portada pasa pa11y-ci en producción. Sigue pendiente revisar la CSP de desarrollo. |
 | M0.8 CI + staging público | CI verificado en el PR. Falta el staging público. |
 | M0.9 README + ADRs | Este archivo + ADR-0001/0002/0003 |
 
-Siguen pendientes el segundo factor real del administrador, las pruebas de
-permisos por rol y la compatibilidad de Next con el rango declarado por
-la UI de Payload.
+Las decisiones de permisos pendientes y la compatibilidad de Next con el rango
+declarado por la UI de Payload se detallan en el estado de M0.
 
 ## Convenciones
 

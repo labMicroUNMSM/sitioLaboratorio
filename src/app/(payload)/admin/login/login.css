@@ -1,0 +1,28 @@
+.acceso-panel {
+  margin: 8vh auto;
+  width: min(28rem, 92vw);
+}
+.acceso-panel form,
+.acceso-panel label {
+  display: grid;
+  gap: 0.6rem;
+}
+.acceso-panel form {
+  gap: 1.25rem;
+}
+.acceso-panel input,
+.acceso-panel button {
+  font: inherit;
+  padding: 0.75rem;
+}
+.acceso-panel img {
+  max-width: 100%;
+  height: auto;
+}
+.acceso-panel code {
+  overflow-wrap: anywhere;
+}
+.acceso-panel summary,
+.acceso-panel button {
+  cursor: pointer;
+}
