@@ -16,7 +16,7 @@ export const Persona: CollectionConfig = {
       required: true,
       options: ROLES_PERSONA.map((value) => ({ value, label: ROLES_PERSONA_LABEL[value].es })),
     },
-    { name: 'cargo_titulo', type: 'text', localized: true },
+    { name: 'cargo_titulo', label: 'Cargo', type: 'text', localized: true },
     { name: 'foto', type: 'upload', relationTo: 'media' },
     { name: 'biografia', type: 'richText', localized: true },
     {
@@ -28,8 +28,9 @@ export const Persona: CollectionConfig = {
     {
       name: 'email',
       type: 'email',
+      access: { read: ({ req }) => Boolean(req.user) },
       admin: {
-        description: 'Se muestra ofuscado en el sitio público (ver componente EmailOfuscado, M1).',
+        description: 'Correo de contacto disponible para el equipo editorial.',
       },
     },
     { name: 'lineas', type: 'relationship', relationTo: 'lineas-investigacion', hasMany: true },

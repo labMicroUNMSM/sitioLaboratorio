@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, fix/integracion-panel-payload]
 
 jobs:
   build-and-test:
@@ -68,4 +68,14 @@ jobs:
         run: |
           pnpm exec next start &
           pnpm exec wait-on --timeout 60000 http://localhost:3000
+          curl -fsS http://localhost:3000/equipo | grep -F 'Aún no hay integrantes publicados.' > /dev/null
+          psql "$DATABASE_URI" -v ON_ERROR_STOP=1 <<'SQL'
+          INSERT INTO personas (nombre_completo, slug, rol, activo, eliminado_en) VALUES
+            ('Integrante visible CI', 'equipo-visible-ci', 'postdoc', true, NULL),
+            ('Ficha inactiva CI', 'equipo-inactiva-ci', 'alumni', false, NULL),
+            ('Ficha retirada CI', 'equipo-retirada-ci', 'alumni', true, now());
+          SQL
+          curl -fsS http://localhost:3000/equipo -o "$RUNNER_TEMP/equipo.html"
+          grep -Fq 'Integrante visible CI' "$RUNNER_TEMP/equipo.html"
+          if grep -Eq 'Ficha (inactiva|retirada) CI' "$RUNNER_TEMP/equipo.html"; then exit 1; fi
           pnpm exec pa11y-ci --config .pa11yci.json

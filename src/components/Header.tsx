@@ -12,7 +12,7 @@ import Link from 'next/link'
 export function Header() {
   return (
     <header className="border-b border-border bg-guinda-700 text-white">
-      <div className="mx-auto flex max-w-page items-center justify-between gap-4 px-4 py-3">
+      <div className="mx-auto flex max-w-page flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3">
         <Link
           href="/"
           aria-label="Inicio · Laboratorio de Investigación en Ciencias Biológicas"
@@ -38,6 +38,14 @@ export function Header() {
             <span className="text-sm font-normal text-oro-200">en Ciencias Biológicas</span>
           </span>
         </Link>
+        <nav aria-label="Navegación principal">
+          <Link
+            href="/equipo"
+            className="inline-flex min-h-11 items-center rounded-sm px-3 font-body font-semibold underline decoration-oro-200 underline-offset-4 hover:bg-guinda-900"
+          >
+            Equipo
+          </Link>
+        </nav>
       </div>
     </header>
   )
