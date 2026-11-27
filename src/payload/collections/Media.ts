@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { accesoContenido, eliminadoEn } from '../accesoContenido'
 
 /**
  * Media — colección de infraestructura.
@@ -11,9 +12,7 @@ import type { CollectionConfig } from 'payload'
  */
 export const Media: CollectionConfig = {
   slug: 'media',
-  access: {
-    read: () => true, // medios públicos por naturaleza (el sitio es de contenido público)
-  },
+  access: accesoContenido(),
   upload: {
     staticDir: '../media-uploads', // en producción, esto va a S3/MinIO vía @payloadcms/storage-s3
     mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
@@ -25,6 +24,7 @@ export const Media: CollectionConfig = {
     formatOptions: { format: 'webp', options: { quality: 82 } },
   },
   fields: [
+    eliminadoEn,
     {
       name: 'alt',
       type: 'text',

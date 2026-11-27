@@ -1,10 +1,12 @@
 import type { CollectionConfig } from 'payload'
+import { accesoContenido, eliminadoEn } from '../accesoContenido'
+import { procedenciaValida } from '../../lib/validation/publicacion.schema'
 
 export const Publicacion: CollectionConfig = {
   slug: 'publicaciones',
   labels: { singular: 'Publicación', plural: 'Publicaciones' },
   admin: { useAsTitle: 'titulo', defaultColumns: ['titulo', 'anio', 'revista', 'cuartil'] },
-  access: { read: () => true },
+  access: accesoContenido(),
   indexes: [{ fields: ['anio'] }, { fields: ['doi'], unique: true }],
   fields: [
     { name: 'titulo', type: 'text', required: true },
@@ -25,7 +27,10 @@ export const Publicacion: CollectionConfig = {
     {
       name: 'bibtex_raw',
       type: 'textarea',
-      required: true,
+      access: { create: () => false, update: () => false },
+      validate: (valor, { siblingData }) =>
+        procedenciaValida('import_batch_id' in siblingData && siblingData.import_batch_id, valor)
+        || 'Una importación requiere su BibTeX original.',
       admin: { description: 'Procedencia: el bloque BibTeX original tal como se importó.', readOnly: true },
     },
     {
@@ -35,8 +40,9 @@ export const Publicacion: CollectionConfig = {
       // (Payload fallaría al arrancar si se pone relationTo a algo inexistente).
       name: 'import_batch_id',
       type: 'text',
+      access: { create: () => false, update: () => false },
       admin: { description: 'Se llena automáticamente al importar (M3). Vacío si se creó a mano.', readOnly: true },
     },
-    { name: 'eliminado_en', type: 'date', admin: { hidden: true } },
+    eliminadoEn,
   ],
 }

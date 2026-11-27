@@ -1,15 +1,11 @@
 import type { CollectionConfig } from 'payload'
+import { accesoContenido, eliminadoEn } from '../accesoContenido'
 
 export const Proyecto: CollectionConfig = {
   slug: 'proyectos',
   labels: { singular: 'Proyecto', plural: 'Proyectos' },
   admin: { useAsTitle: 'titulo', defaultColumns: ['titulo', 'tipo', 'estado'] },
-  access: {
-    // El portafolio es público por naturaleza (M4); lo que se restringe no es
-    // el registro sino el campo `monto` cuando monto_publicable es falso —
-    // eso se resuelve en el resolver de lectura pública (M4), no aquí.
-    read: () => true,
-  },
+  access: accesoContenido(),
   fields: [
     { name: 'titulo', type: 'text', required: true, localized: true },
     { name: 'slug', type: 'text', required: true, unique: true, index: true },
@@ -42,7 +38,7 @@ export const Proyecto: CollectionConfig = {
     { name: 'equipo', type: 'relationship', relationTo: 'personas', hasMany: true },
     { name: 'lineas', type: 'relationship', relationTo: 'lineas-investigacion', hasMany: true },
     { name: 'logos_financiadores', type: 'upload', relationTo: 'media', hasMany: true },
-    { name: 'eliminado_en', type: 'date', admin: { hidden: true } },
+    eliminadoEn,
   ],
   hooks: {
     beforeValidate: [

@@ -3,6 +3,8 @@ import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { s3Storage } from '@payloadcms/storage-s3'
+import { credenciales, intentos } from './mfa/tablas'
+import { migrations } from '../migrations'
 
 import { LineaInvestigacion } from './collections/LineaInvestigacion'
 import { Persona } from './collections/Persona'
@@ -55,7 +57,13 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI,
     },
-    push: true
+    afterSchemaInit: [({ schema }) => {
+      schema.tables.usuario_mfa = credenciales
+      schema.tables.usuario_mfa_intentos = intentos
+      return schema
+    }],
+    push: true,
+    ...(process.env.PAYLOAD_RUN_MIGRATIONS === 'true' && { prodMigrations: migrations }),
   }),
 
   plugins: [
