@@ -5,7 +5,10 @@ import { Cuerpo } from '@/components/Catalogo'
 export default async function PaginaInicio() {
   const {
     docs: [presentacion],
-  } = await consultar('paginas', { clave: 'laboratorio' })
+  } = await consultar('paginas', { clave: 'laboratorio' }).catch(() => {
+    console.error('No se pudo cargar la presentación editorial de la portada.')
+    return { docs: [] }
+  })
 
   return (
     <div className="mx-auto max-w-page px-4 py-16">

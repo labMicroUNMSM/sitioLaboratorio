@@ -41,6 +41,8 @@ Abre **sitioLaboratorio demo 3107** en el escritorio para usar el menú. La port
 | `.\sitioLaboratorio.cmd detener` | Detiene los contenedores. Los volúmenes conservan las fichas, las cuentas y los archivos. |
 | `.\sitioLaboratorio.cmd preparar` | Construye esta copia, prepara contenido una sola vez y actualiza su acceso directo. |
 
+El acceso directo anterior de M0 sigue controlando el puerto 3102. Cada acceso nuevo lleva el puerto de su demo en el nombre.
+
 Para editar basta la cuenta de editor. Para administrar cuentas, el operador local puede ejecutar `.\sitioLaboratorio.cmd primer-admin` con el sitio encendido. Introduce el correo del editor ya registrado. En el siguiente ingreso, escanea el QR con tu autenticador y confirma el código. Guarda las claves de la instalación en un respaldo privado. Cada copia usa su propio directorio `~/.local/share/sitiolaboratorio/demo-…` en WSL y sus propios volúmenes. El ZIP y Git incluyen únicamente el material inicial.
 
 **Recorrido.** Abre una línea y sigue sus enlaces al proyecto y al artículo. En Equipo abre a Lucía Valle. En Payload cambia su cargo en **Personas**, guarda y recarga la ficha pública. Prueba Únete o Contacto con datos ficticios y lee el mensaje en **Solicitudes** del panel. La bandeja es local y está disponible para el equipo editorial. Para ver las acciones avanzadas pendientes y las decisiones de nube, consulta la [ficha de entrega](docs/ENTREGA-DEMO.md).

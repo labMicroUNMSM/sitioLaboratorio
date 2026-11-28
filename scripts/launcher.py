@@ -4,6 +4,7 @@ import fcntl
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import secrets
 import socket
@@ -16,12 +17,19 @@ from urllib.request import ProxyHandler, build_opener
 
 
 ROOT = Path(__file__).resolve().parents[1]
+ANTERIOR = sys.argv[3:4] == ["original"]
 INSTALL = hashlib.sha256(str(ROOT).casefold().encode()).hexdigest()[:12]
 STATE = Path.home() / ".local/share/sitiolaboratorio" / ("demo-" + INSTALL)
 PROJECT = "sitio-demo-" + INSTALL
 ENV = STATE / "instalacion.env"
+if ANTERIOR:
+    if sys.argv[1] not in ("iniciar", "direccion", "estado", "detener"):
+        sys.exit("El menú anterior solo controla la instancia ya preparada.")
+    PROJECT = "sitio-m0-almacen"
+    STATE = STATE.parent / "m0-compose"
+    ENV = STATE / "prueba.env"
 try:
-    PORT = int((STATE / "puerto").read_text() if (STATE / "puerto").is_file() else sys.argv[2])
+    PORT = 3102 if ANTERIOR else int((STATE / "puerto").read_text() if (STATE / "puerto").is_file() else sys.argv[2])
     if not 1024 <= PORT <= 65535:
         raise ValueError
 except (ValueError, IndexError):
@@ -47,21 +55,29 @@ def run(*args, error, timeout=20):
 
 
 def compose_args():
+    if ANTERIOR:
+        return [str(STATE / "compose")]
     return ["docker", "compose", "--env-file", str(ENV), "-p", PROJECT, "-f", str(ROOT / "docker-compose.yml"),
             "-f", str(ROOT / "scripts/compose.demo.yml")]
 
 
-def compose(*args, error="Revisa el wrapper y los archivos de configuración. " + RESTORE, timeout=20):
+def compose(*args, error="Revisa los archivos Compose y la configuración privada. " + RESTORE, timeout=20):
     return run(*compose_args(), *args, error=error, timeout=timeout)
 
 
 def check_engine():
     if run("docker", "info", "--format", "{{.OSType}}", error=DOCKER_HELP, timeout=10) != "linux":
         raise RuntimeError(DOCKER_HELP)
+    help_compose = "Actualiza Docker Desktop a una versión con Docker Compose 2.24.4 o posterior y vuelve a preparar."
+    version = run("docker", "compose", "version", "--short", error=help_compose)
+    partes = re.match(r"v?(\d+)\.(\d+)\.(\d+)", version)
+    if not partes or tuple(map(int, partes.groups())) < (2, 24, 4):
+        raise RuntimeError(help_compose)
 
 
 def check_config():
-    for name in ("instalacion.env", "puerto"):
+    archivos = ("compose", "prueba.env", "compose.prueba.yml") if ANTERIOR else ("instalacion.env", "puerto")
+    for name in archivos:
         if not (STATE / name).is_file():
             raise RuntimeError(f"Falta {name}. " + RESTORE)
     model = json.loads(compose("config", "--format", "json"))
@@ -105,8 +121,9 @@ def port_busy():
 
 def responds():
     try:
-        with build_opener(ProxyHandler({})).open(URL + "/equipo", timeout=8) as response:
-            return response.status == 200 and response.geturl() == URL + "/equipo"
+        destino = URL + ("/" if ANTERIOR else "/equipo")
+        with build_opener(ProxyHandler({})).open(destino, timeout=8) as response:
+            return response.status == 200 and response.geturl() == destino
     except OSError:
         return False
 

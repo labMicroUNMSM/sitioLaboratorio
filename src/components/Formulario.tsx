@@ -38,6 +38,7 @@ export async function Formulario({
               required
               minLength={2}
               maxLength={100}
+              type="text"
               name="nombre"
               autoComplete="name"
             />
