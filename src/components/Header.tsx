@@ -42,6 +42,13 @@ export function Header() {
           {[
             { href: '/equipo', titulo: 'Equipo' },
             { href: '/lineas-investigacion', titulo: 'Líneas de investigación' },
+            { href: '/publicaciones', titulo: 'Publicaciones y patentes' },
+            { href: '/proyectos', titulo: 'Proyectos' },
+            { href: '/equipamiento', titulo: 'Equipamiento' },
+            { href: '/actualidad', titulo: 'Actualidad' },
+            { href: '/unete', titulo: 'Únete' },
+            { href: '/contacto', titulo: 'Contacto' },
+            { href: '/buscar', titulo: 'Buscar' },
           ].map(({ href, titulo }) => (
             <Link
               key={href}

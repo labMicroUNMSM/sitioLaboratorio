@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { getPayload } from 'payload'
@@ -42,7 +43,7 @@ export default async function Equipo() {
     depth: 1,
     pagination: false,
     sort: ['orden', 'nombre_completo', 'id'],
-    select: { nombre_completo: true, rol: true, cargo_titulo: true, foto: true },
+    select: { slug: true, nombre_completo: true, rol: true, cargo_titulo: true, foto: true },
     populate: { media: { alt: true, filename: true, sizes: { thumbnail: { filename: true } } } },
   })
 
@@ -78,7 +79,7 @@ export default async function Equipo() {
                   </span>
                 )}
                 <h2 className="mt-5 break-words font-display text-2xl leading-tight text-ink">
-                  {persona.nombre_completo}
+                  <Link href={'/equipo/' + encodeURIComponent(String(doc.slug))} className="text-guinda-700 underline">{persona.nombre_completo}</Link>
                 </h2>
                 <p className="mt-2 font-body font-semibold text-guinda-700">
                   {ROLES_PERSONA_LABEL[persona.rol].es}

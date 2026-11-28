@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main, fix/integracion-panel-payload, feat/m1-equipo]
+    branches: [main, fix/integracion-panel-payload, feat/m1-equipo, feat/m2-lineas]
 
 jobs:
   build-and-test:

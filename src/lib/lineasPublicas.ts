@@ -89,7 +89,7 @@ export async function participantesYTrabajos(id: number | string) {
     payload.find({
       ...consulta,
       collection: 'proyectos',
-      select: { titulo: true },
+      select: { titulo: true, slug: true },
       sort: ['titulo', 'id'],
     }),
     payload.find({
@@ -101,9 +101,10 @@ export async function participantesYTrabajos(id: number | string) {
   ])
   return {
     personas: personas.docs.map((p) => ({ id: p.id, nombre: z.string().parse(p.nombre_completo) })),
-    proyectos: proyectos.docs.map((p) => ({ id: p.id, titulo: z.string().parse(p.titulo) })),
+    proyectos: proyectos.docs.map((p) => ({ id: p.id, href: '/proyectos/' + encodeURIComponent(z.string().parse(p.slug)), titulo: z.string().parse(p.titulo) })),
     publicaciones: publicaciones.docs.map((p) => ({
       id: p.id,
+      href: '/publicaciones/' + p.id,
       titulo: z.string().parse(p.titulo),
     })),
   }
