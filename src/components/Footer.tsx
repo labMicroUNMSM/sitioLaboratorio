@@ -1,3 +1,4 @@
+import Link from 'next/link'
 export function Footer() {
   const anio = new Date().getFullYear()
 
@@ -12,8 +13,7 @@ export function Footer() {
           Este sitio es independiente de los sistemas informáticos de la UNMSM (ver ADR-0001);
           no consume ni depende de ningún API institucional.
         </p>
-        {/* El aviso de privacidad (Ley 29733) y el enlace a derechos ARCO se
-            agregan en M6, apuntando a una Pagina con slug "privacidad". */}
+        <Link className="mt-3 inline-block text-guinda-700 underline" href="/paginas">Información y privacidad</Link>
       </div>
     </footer>
   )

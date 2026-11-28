@@ -27,7 +27,7 @@ export const Proyecto: CollectionConfig = {
     },
     { name: 'periodo_inicio', type: 'date', required: true },
     { name: 'periodo_fin', type: 'date' },
-    { name: 'monto', type: 'number', min: 0 },
+    { name: 'monto', type: 'number', min: 0, access: { read: ({ req, doc }) => Boolean(req.user || doc?.monto_publicable) } },
     {
       name: 'monto_publicable',
       type: 'checkbox',

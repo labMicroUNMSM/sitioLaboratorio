@@ -2,12 +2,23 @@
   "defaults": {
     "standard": "WCAG2AA",
     "timeout": 15000,
-    "runners": ["axe", "htmlcs"]
+    "runners": [
+      "axe",
+      "htmlcs"
+    ]
   },
   "urls": [
     "http://localhost:3000/",
     "http://localhost:3000/equipo",
     "http://localhost:3000/lineas-investigacion",
-    "http://localhost:3000/lineas-investigacion/fenologia-del-bosque"
+    "http://localhost:3000/lineas-investigacion/fenologia-del-bosque",
+    "http://localhost:3000/publicaciones",
+    "http://localhost:3000/proyectos",
+    "http://localhost:3000/equipamiento",
+    "http://localhost:3000/actualidad",
+    "http://localhost:3000/paginas",
+    "http://localhost:3000/unete",
+    "http://localhost:3000/contacto",
+    "http://localhost:3000/buscar"
   ]
 }

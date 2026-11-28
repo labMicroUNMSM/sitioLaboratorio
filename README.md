@@ -5,43 +5,47 @@ sistemas de la UNMSM** (ver [ADR-0001](docs/adr/ADR-0001-independencia-de-la-uni
 base de datos y CMS propios, sin dependencias de APIs universitarias para
 mostrar contenido.
 
-## Launcher de Windows con WSL 2
+## Instalar en otra PC Windows
 
-**Uso diario.** Abre el acceso directo **sitioLaboratorio** del escritorio o
-`sitioLaboratorio.cmd` en el clon. Elige **1** para abrir la portada, **2**
-para abrir Payload, **3** para consultar el estado, **4** para detener el sitio
-y **5** para cerrar el menú. Las opciones 1 y 2 arrancan el sitio si hace
-falta. La opción 4 conserva el editor y los medios. Puedes cerrar el menú
-mientras trabajas en el navegador.
+La [versión demo Windows 1](https://github.com/labMicroUNMSM/sitioLaboratorio/tree/demo-windows-1) incluye el código, el contenido ficticio y dos imágenes. La primera preparación carga registros editables en PostgreSQL y sube los archivos, sus variantes y sus descripciones a MinIO. Tú creas la primera cuenta.
 
-**Primera instalación.** Con Git para Windows, WSL 2 y Docker Desktop
-instalados, abre Docker Desktop y habilita la integración con tu distribución
-Linux predeterminada. Esta debe tener Python 3 y Git. Desde PowerShell, en la
-carpeta de Windows donde quieres guardar el clon, ejecuta:
+Necesitas Windows con WSL 2, una distribución Linux predeterminada con Python 3.9 o posterior, Docker Desktop en modo Linux con integración WSL y Compose 2.24.4 o posterior. Abre Docker Desktop. Comprueba `wsl -l -v` si no aparece tu distribución con versión 2. Para instalar Ubuntu por primera vez usa `wsl --install -d Ubuntu`, reinicia y completa su primer inicio. La construcción inicial necesita Internet, espacio para las imágenes y varios minutos.
+
+Con Git para Windows, copia en PowerShell:
 
 ```powershell
-git clone --branch fix/integracion-panel-payload https://github.com/labMicroUNMSM/sitioLaboratorio.git
-cd sitioLaboratorio
+git clone --depth 1 --branch demo-windows-1 https://github.com/labMicroUNMSM/sitioLaboratorio.git "Laboratorio demo"
+cd "Laboratorio demo"
 .\sitioLaboratorio.cmd preparar
+.\sitioLaboratorio.cmd iniciar
 ```
 
-La preparación crea el acceso directo en el escritorio configurado por Windows
-(incluido OneDrive). En una instalación nueva prepara las imágenes, genera
-secretos privados y reserva los volúmenes. Entonces puedes abrir el icono y
-registrar al primer usuario con la opción 2. Si ya usas `sitio-m0-almacen`,
-la misma orden comprueba la instalación y crea el acceso directo, conservando
-tu usuario y tus archivos. La portada está en `http://127.0.0.1:3102/` y
-el panel en `http://127.0.0.1:3102/admin`.
+También puedes usar el [ZIP de la versión](https://github.com/labMicroUNMSM/sitioLaboratorio/archive/refs/tags/demo-windows-1.zip). En una carpeta donde aún no exista esa descarga:
 
-El menú usa el wrapper de WSL en `~/.local/share/sitiolaboratorio/m0-compose/compose`.
-Allí viven el clon de ejecución `repo-final`, `prueba.env` y un ajuste local
-de puertos sobre el Compose del repositorio. Conserva ese directorio y los
-volúmenes `sitio-m0-almacen_postgres_data` y `sitio-m0-almacen_minio_data`.
-Si falta alguno, comprueba que elegiste la distribución WSL y el motor de Docker
-originales antes de recuperar tu respaldo. Si el puerto 3102 está ocupado,
-cierra el otro servicio y vuelve a elegir 1 o 2. Si moviste el clon de Windows,
-ejecuta `.\sitioLaboratorio.cmd preparar` desde su nueva ubicación para
-actualizar el acceso directo.
+```powershell
+Invoke-WebRequest 'https://github.com/labMicroUNMSM/sitioLaboratorio/archive/refs/tags/demo-windows-1.zip' -OutFile laboratorio.zip
+Unblock-File -LiteralPath laboratorio.zip
+Expand-Archive -LiteralPath laboratorio.zip -DestinationPath 'Laboratorio demo'
+cd 'Laboratorio demo\sitioLaboratorio-demo-windows-1'
+.\sitioLaboratorio.cmd preparar
+.\sitioLaboratorio.cmd iniciar
+```
+
+Abre **sitioLaboratorio demo 3107** en el escritorio para usar el menú. La portada está en http://127.0.0.1:3107/ y el panel en http://127.0.0.1:3107/admin. Si el puerto está ocupado en una instalación nueva, ejecuta `$env:SITIO_PUERTO='3110'` (o elige otro libre) antes de **preparar**. El launcher recuerda el puerto de esa carpeta. Conserva la carpeta en su ubicación. Otra copia o ruta identifica una instalación independiente. Si mueves una instalación con datos, devuelve la carpeta a su ubicación original antes de volver a preparar.
+
+| Comando de uso diario | Resultado |
+|---|---|
+| `.\sitioLaboratorio.cmd iniciar` | Arranca los servicios, comprueba que Equipo responde y abre la portada. |
+| `.\sitioLaboratorio.cmd panel` | Abre Payload. En el primer registro elige tu nombre, correo y contraseña. El rol inicial es editor. |
+| `.\sitioLaboratorio.cmd estado` | Muestra el estado de la app, PostgreSQL y MinIO y la URL de esta copia. |
+| `.\sitioLaboratorio.cmd detener` | Detiene los contenedores. Los volúmenes conservan las fichas, las cuentas y los archivos. |
+| `.\sitioLaboratorio.cmd preparar` | Construye esta copia, prepara contenido una sola vez y actualiza su acceso directo. |
+
+El acceso directo anterior de M0 sigue controlando el puerto 3102. Cada acceso nuevo lleva el puerto de su demo en el nombre.
+
+Para editar basta la cuenta de editor. Para administrar cuentas, el operador local puede ejecutar `.\sitioLaboratorio.cmd primer-admin` con el sitio encendido. Introduce el correo del editor ya registrado. En el siguiente ingreso, escanea el QR con tu autenticador y confirma el código. Guarda las claves de la instalación en un respaldo privado. Cada copia usa su propio directorio `~/.local/share/sitiolaboratorio/demo-…` en WSL y sus propios volúmenes. El ZIP y Git incluyen únicamente el material inicial.
+
+**Recorrido.** Abre una línea y sigue sus enlaces al proyecto y al artículo. En Equipo abre a Lucía Valle. En Payload cambia su cargo en **Personas**, guarda y recarga la ficha pública. Prueba Únete o Contacto con datos ficticios y lee el mensaje en **Solicitudes** del panel. La bandeja es local y está disponible para el equipo editorial. Para ver las acciones avanzadas pendientes y las decisiones de nube, consulta la [ficha de entrega](docs/ENTREGA-DEMO.md).
 
 ## Arranque directo con Docker Compose
 
@@ -96,7 +100,7 @@ de identidad; cambiarla después cuesta editar un archivo, no una migración.
 7 colecciones de contenido (`LineaInvestigacion`, `Persona`, `Proyecto`,
 `Publicacion`, `Patente`, `Equipamiento`, `Noticia`) + `Pagina` (genérica,
 para textos estáticos como aviso de privacidad) + infraestructura (`Media`,
-`Usuario`, `Auditoria`). Definiciones Payload en `src/payload/collections/`,
+`Usuario`, `Auditoria`) y la bandeja privada `Solicitudes`. Definiciones Payload en `src/payload/collections/`,
 esquemas Zod espejo en `src/lib/validation/`.
 
 Localización ES/EN **habilitada desde M0** en todos los campos de texto
@@ -122,15 +126,10 @@ panel, no están hardcodeadas en el esquema salvo donde afectan permisos
 
 ### Primer administrador y autenticador
 
-El primer registro crea un editor. Para promoverlo, el operador de la base
-ejecuta desde la raíz del clon el siguiente comando de WSL, eligiendo el
-wrapper de **su instalación** y sustituyendo el correo. Funciona mientras
-todavía no exista ningún administrador. La promoción cierra las sesiones
-anteriores y queda registrada en Auditoría.
-
-```bash
-~/.local/share/sitiolaboratorio/m0-compose/compose exec -T postgres psql -X -U laboratorio -d laboratorio_db -v correo='correo-del-editor@example.test' < scripts/primer-admin.sql
-```
+El primer registro crea un editor. En la distribución para Windows, el operador ejecuta
+`.\sitioLaboratorio.cmd primer-admin` desde la carpeta preparada. La promoción revoca
+las sesiones anteriores y queda registrada en Auditoría. El procedimiento SQL está en
+`scripts/primer-admin.sql` para instalaciones administradas directamente.
 
 Al entrar en `/admin`, el administrador introduce su contraseña, escanea el QR
 en una app autenticadora y confirma el primer código. También puede introducir
@@ -146,10 +145,9 @@ recuperación por pérdida del dispositivo.
 
 ## Legal (Perú, Ley 29733)
 
-El cumplimiento pleno (aviso de privacidad, consentimiento granular, cifrado
-de formularios en reposo, derechos ARCO) se construye en M6. M0 solo deja
-listo el punto de extensión (`Pagina` genérica, `FIELD_ENCRYPTION_KEY` en
-`.env.example`). Esto no es asesoría legal.
+La demostración solicita consentimiento y almacena los mensajes cifrados. Usa
+datos ficticios. El laboratorio debe validar la finalidad, los plazos de conservación,
+los destinatarios y el procedimiento de derechos ARCO antes de recibir datos reales.
 
 ## Líneas de investigación
 

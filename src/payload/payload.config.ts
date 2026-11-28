@@ -18,7 +18,11 @@ import { Media } from './collections/Media'
 import { Usuario } from './collections/Usuario'
 import { Auditoria } from './collections/Auditoria'
 
+import { Solicitud } from './collections/Solicitud'
+import { prepararDemo } from './demo'
+
 export default buildConfig({
+  onInit: prepararDemo,
   // Localización ES/EN habilitada desde M0 (decisión confirmada, Parte E-1).
   // El español es el idioma "de captura" por defecto; el inglés se completa
   // después sin migrar esquema.
@@ -51,6 +55,7 @@ export default buildConfig({
     Media,
     Usuario,
     Auditoria,
+    Solicitud,
   ],
 
   db: postgresAdapter({

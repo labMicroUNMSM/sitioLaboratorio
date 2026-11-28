@@ -5,7 +5,7 @@ export const Noticia: CollectionConfig = {
   slug: 'noticias',
   labels: { singular: 'Noticia', plural: 'Noticias' },
   admin: { useAsTitle: 'titulo', defaultColumns: ['titulo', 'fecha_publicacion', 'estado'] },
-  access: accesoContenido({ estado: { equals: 'publicado' } }),
+  access: accesoContenido({ and: [{ estado: { equals: 'publicado' } }, { _status: { equals: 'published' } }] }),
   versions: { drafts: { schedulePublish: true } }, // soporta estado "programado"
   indexes: [{ fields: ['estado', 'fecha_publicacion'] }],
   fields: [
